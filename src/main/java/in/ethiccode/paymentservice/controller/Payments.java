@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class HealthController {
-
-    @GetMapping("/ping")
-    public String ping() {
-        return "payment-service: K01";
+public class Payments {
+    @GetMapping("/payment/{ID}")
+    public ResponseEntity<String> getPaymentById(@PathVariable("ID") Long ID) {
+        return ResponseEntity.ok("Payment ID = " + ID + " Details: ");
     }
-
 }
