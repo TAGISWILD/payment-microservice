@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="IU-252.25557.131">
+    <data-source name="paymentdb@localhost" uuid="39dc055e-d52d-4bc1-b675-d2ee7ae97949">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <user-name>payment_user</user-name>
+      <schema-mapping />
+    </data-source>
+    <data-source name="paymentdb@localhost" uuid="69daaced-21ca-49b1-b553-a6879c266217">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <user-name>payment_user</user-name>
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>

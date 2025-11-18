@@ -10,12 +10,17 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # dev only; use 'validate' in prod
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  sql:
+    init:
+      mode: never              # <- force run schema.sql on startup
+      schema-locations: classpath:schema.sql
 
 server:
   port: 8081
