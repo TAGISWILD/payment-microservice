@@ -1,11 +1,11 @@
-package in.ethiccode.paymentservice.controller;
+package in.ethiccode.paymentservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import in.ethiccode.paymentservice.controller.PaymentInitRequest;
-import in.ethiccode.paymentservice.controller.PaymentInitResponse;
-import in.ethiccode.paymentservice.controller.PaymentOrder;
-import in.ethiccode.paymentservice.controller.PaymentOrderRepository;
+import in.ethiccode.paymentservice.dto.PaymentInitRequest;
+import in.ethiccode.paymentservice.dto.PaymentInitResponse;
+import in.ethiccode.paymentservice.entity.PaymentOrder;
+import in.ethiccode.paymentservice.repository.PaymentOrderRepository;
 import org.springframework.stereotype.Service;
 
 @Service

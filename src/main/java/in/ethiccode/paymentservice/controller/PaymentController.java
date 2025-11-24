@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import in.ethiccode.paymentservice.controller.PaymentInitRequest;
-import in.ethiccode.paymentservice.controller.PaymentInitResponse;
-import in.ethiccode.paymentservice.controller.PaymentService;
+import in.ethiccode.paymentservice.dto.PaymentInitRequest;
+import in.ethiccode.paymentservice.dto.PaymentInitResponse;
+import in.ethiccode.paymentservice.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

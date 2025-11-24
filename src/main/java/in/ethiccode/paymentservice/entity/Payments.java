@@ -1,4 +1,4 @@
-package in.ethiccode.paymentservice.controller;
+package in.ethiccode.paymentservice.entity;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

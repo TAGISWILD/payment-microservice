@@ -1,4 +1,4 @@
-package in.ethiccode.paymentservice.controller;
+package in.ethiccode.paymentservice.entity;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
