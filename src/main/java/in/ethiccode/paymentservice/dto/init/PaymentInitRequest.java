@@ -1,4 +1,4 @@
-package in.ethiccode.paymentservice.dto;
+package in.ethiccode.paymentservice.dto.init;
 
 public class PaymentInitRequest {
 

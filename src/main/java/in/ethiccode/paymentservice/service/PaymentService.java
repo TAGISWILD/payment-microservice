@@ -1,12 +1,17 @@
 package in.ethiccode.paymentservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import in.ethiccode.paymentservice.dto.PaymentInitRequest;
-import in.ethiccode.paymentservice.dto.PaymentInitResponse;
+import in.ethiccode.paymentservice.dto.init.PaymentInitRequest;
+import in.ethiccode.paymentservice.dto.init.PaymentInitResponse;
+import in.ethiccode.paymentservice.dto.verify.PaymentVerifyRequest;
+import in.ethiccode.paymentservice.dto.verify.PaymentVerifyResponse;
 import in.ethiccode.paymentservice.entity.PaymentOrder;
 import in.ethiccode.paymentservice.repository.PaymentOrderRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+
+import java.util.UUID;
+
 
 @Service
 public class PaymentService {
@@ -46,5 +51,39 @@ public class PaymentService {
         response.setCurrency(order.getCurrency());
 
         return response;
+    }
+    public PaymentVerifyResponse verifyPayment(PaymentVerifyRequest req) {
+        UUID publicId;
+
+        try {
+            publicId = UUID.fromString(req.getOrderId());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid orderId format");
+        }
+
+        PaymentOrder order = paymentOrderRepository.findByPublicId(publicId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Order not found"));
+
+        // Idempotency: if already completed, just return
+        if ("COMPLETED".equalsIgnoreCase(order.getStatus())) {
+            PaymentVerifyResponse resp = new PaymentVerifyResponse();
+            resp.setOrderId(order.getPublicId().toString());
+            resp.setStatus(order.getStatus());
+            resp.setMessage("Order already verified");
+            return resp;
+        }
+
+        // If you want to store gatewayPaymentId later, you can add a column/field.
+        // For now, we just mark order as COMPLETED.
+        order.setStatus("COMPLETED");
+        paymentOrderRepository.save(order);
+
+        PaymentVerifyResponse resp = new PaymentVerifyResponse();
+        resp.setOrderId(order.getPublicId().toString());
+        resp.setStatus(order.getStatus());
+        resp.setMessage("Payment verified and order marked as COMPLETED");
+
+        return resp;
     }
 }
