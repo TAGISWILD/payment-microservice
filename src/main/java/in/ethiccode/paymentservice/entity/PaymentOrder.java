@@ -1,5 +1,6 @@
 package in.ethiccode.paymentservice.entity;
 
+import in.ethiccode.paymentservice.enums.PaymentStatus;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -8,6 +9,16 @@ import java.util.UUID;
 @Table(name = "payment_orders")
 public class PaymentOrder {
 
+    // ----------
+    // ENUM STATUS
+    // ----------
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus status;
+
+    // ----------
+    // CORE FIELDS
+    // ----------
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,15 +33,11 @@ public class PaymentOrder {
     private String externalReferenceId;
 
     private Long amount;
-
     private String currency;
-
     private String gateway;
 
     @Column(name = "gateway_order_id")
     private String gatewayOrderId;
-
-    private String status;
 
     private String description;
 
@@ -52,6 +59,9 @@ public class PaymentOrder {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private OffsetDateTime updatedAt;
 
+    // ----------
+    // LIFECYCLE
+    // ----------
     @PrePersist
     public void prePersist() {
         if (publicId == null) {
@@ -59,8 +69,9 @@ public class PaymentOrder {
         }
     }
 
-    // --------------------------------------------------------
-    // GETTERS & SETTERS
+    // ----------
+    // GETTERS / SETTERS
+    // ----------
     public Long getId() { return id; }
 
     public UUID getPublicId() { return publicId; }
@@ -84,9 +95,6 @@ public class PaymentOrder {
     public String getGatewayOrderId() { return gatewayOrderId; }
     public void setGatewayOrderId(String gatewayOrderId) { this.gatewayOrderId = gatewayOrderId; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
@@ -103,6 +111,16 @@ public class PaymentOrder {
     public void setMetadata(String metadata) { this.metadata = metadata; }
 
     public OffsetDateTime getCreatedAt() { return createdAt; }
-
     public OffsetDateTime getUpdatedAt() { return updatedAt; }
+
+    // ----------
+    // STATUS (ENUM)
+    // ----------
+    public PaymentStatus getStatus() {     // <-- ADDED getter
+        return status;
+    }
+
+    public void setStatus(PaymentStatus status) {
+        this.status = status;
+    }
 }

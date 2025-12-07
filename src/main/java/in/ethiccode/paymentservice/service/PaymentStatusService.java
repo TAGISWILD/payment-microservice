@@ -22,7 +22,7 @@ public class PaymentStatusService {
 
         return PaymentStatusResponse.builder()
                 .orderId(order.getPublicId().toString())
-                .status(order.getStatus())
+                .status(order.getStatus().name())
                 .amount(order.getAmount())
                 .currency(order.getCurrency())
                 .description(order.getDescription())

@@ -11,4 +11,8 @@ import java.util.UUID;
 public interface PaymentOrderRepository extends JpaRepository<PaymentOrder, Long> {
 
     Optional<PaymentOrder> findByPublicId(UUID publicId);
+
+    Optional<PaymentOrder> findByExternalReferenceId(String externalReferenceId);
+
+    Optional<PaymentOrder> findByGatewayOrderId(String gatewayOrderId);
 }

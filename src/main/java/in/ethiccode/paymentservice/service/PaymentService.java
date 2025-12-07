@@ -5,6 +5,7 @@ import in.ethiccode.paymentservice.dto.init.PaymentInitResponse;
 import in.ethiccode.paymentservice.dto.verify.PaymentVerifyRequest;
 import in.ethiccode.paymentservice.dto.verify.PaymentVerifyResponse;
 import in.ethiccode.paymentservice.entity.PaymentOrder;
+import in.ethiccode.paymentservice.enums.PaymentStatus;
 import in.ethiccode.paymentservice.repository.PaymentOrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,7 +31,7 @@ public class PaymentService {
         order.setCurrency(req.getCurrency());
         order.setDescription(req.getDescription());
         order.setExternalReferenceId(req.getExternalReferenceId());
-        order.setStatus("CREATED");
+        order.setStatus(PaymentStatus.CREATED);
         order.setGateway("DUMMY"); // or "RAZORPAY" later
 
         if (req.getCustomer() != null) {
@@ -66,22 +67,22 @@ public class PaymentService {
                         HttpStatus.NOT_FOUND, "Order not found"));
 
         // Idempotency: if already completed, just return
-        if ("COMPLETED".equalsIgnoreCase(order.getStatus())) {
+        if ("COMPLETED".equalsIgnoreCase(order.getStatus().name())) {
             PaymentVerifyResponse resp = new PaymentVerifyResponse();
             resp.setOrderId(order.getPublicId().toString());
-            resp.setStatus(order.getStatus());
+            resp.setStatus(order.getStatus().name());
             resp.setMessage("Order already verified");
             return resp;
         }
 
         // If you want to store gatewayPaymentId later, you can add a column/field.
         // For now, we just mark order as COMPLETED.
-        order.setStatus("COMPLETED");
+        order.setStatus(PaymentStatus.CREATED);
         paymentOrderRepository.save(order);
 
         PaymentVerifyResponse resp = new PaymentVerifyResponse();
         resp.setOrderId(order.getPublicId().toString());
-        resp.setStatus(order.getStatus());
+        resp.setStatus(order.getStatus().name());
         resp.setMessage("Payment verified and order marked as COMPLETED");
 
         return resp;

@@ -1,5 +1,5 @@
 # paste the orderId you got from test-payment.ps1
-$orderId = "404314d5-c06c-4b3f-95d4-80bfdc956df8"
+$orderId = "2bdb100b-3a4f-4789-860a-ee813f1d1873"
 
 $payload = @{
     orderId = $orderId
