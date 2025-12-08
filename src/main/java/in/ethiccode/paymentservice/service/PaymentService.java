@@ -7,35 +7,32 @@ import in.ethiccode.paymentservice.dto.verify.PaymentVerifyRequest;
 import in.ethiccode.paymentservice.dto.verify.PaymentVerifyResponse;
 import in.ethiccode.paymentservice.entity.PaymentOrder;
 import in.ethiccode.paymentservice.enums.PaymentStatus;
+import in.ethiccode.paymentservice.exception.PaymentException;
 import in.ethiccode.paymentservice.repository.PaymentOrderRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
     private final PaymentOrderRepository paymentOrderRepository;
     private final RazorpayClient razorpayClient;
     private final RazorpayProperties razorpayProperties;
 
-    public PaymentService(PaymentOrderRepository paymentOrderRepository,
-                          RazorpayClient razorpayClient,
-                          RazorpayProperties razorpayProperties) {
-        this.paymentOrderRepository = paymentOrderRepository;
-        this.razorpayClient = razorpayClient;
-        this.razorpayProperties = razorpayProperties;
-    }
-
     // ----------------------------------------------------
     // 1) INITIATE PAYMENT  (creates local order + Razorpay order)
     // ----------------------------------------------------
     public PaymentInitResponse initiatePayment(PaymentInitRequest req) {
+        log.info("Initiating payment for amount={} currency={}", req.getAmount(), req.getCurrency());
 
         PaymentOrder order = new PaymentOrder();
         order.setAmount(req.getAmount());
@@ -68,51 +65,48 @@ public class PaymentService {
 
         // save local order (publicId will be generated in @PrePersist)
         order = paymentOrderRepository.save(order);
+        log.info("Created payment order publicId={} gatewayOrderId={}", order.getPublicId(), razorpayOrderId);
 
-        // build response for frontend
-        PaymentInitResponse response = new PaymentInitResponse();
-        response.setOrderId(order.getPublicId().toString());   // our UUID
-        response.setGateway(order.getGateway());               // "RAZORPAY"
-        response.setGatewayOrderId(order.getGatewayOrderId()); // order_XXXX
-        response.setAmount(order.getAmount());
-        response.setCurrency(order.getCurrency());
-        response.setGatewayKeyId(razorpayProperties.getKeyId()); // handy for JS checkout
-
-        return response;
+        // build response for frontend using builder
+        return PaymentInitResponse.builder()
+                .orderId(order.getPublicId().toString())
+                .gateway(order.getGateway())
+                .gatewayOrderId(order.getGatewayOrderId())
+                .amount(order.getAmount())
+                .currency(order.getCurrency())
+                .gatewayKeyId(razorpayProperties.getKeyId())
+                .build();
     }
 
     // ----------------------------------------------------
     // 2) VERIFY PAYMENT (Razorpay signature verification)
     // ----------------------------------------------------
     public PaymentVerifyResponse verifyPayment(PaymentVerifyRequest req) {
+        log.info("Verifying payment for orderId={}", req.getOrderId());
+
         // orderId here is your publicId (UUID)
-        UUID publicId;
-        try {
-            publicId = UUID.fromString(req.getOrderId());
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid orderId format");
-        }
+        UUID publicId = parseUuid(req.getOrderId());
 
         PaymentOrder order = paymentOrderRepository.findByPublicId(publicId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Order not found"));
+                .orElseThrow(() -> PaymentException.orderNotFound(req.getOrderId()));
 
         // Idempotent: already completed
         if (PaymentStatus.COMPLETED.equals(order.getStatus())) {
-            PaymentVerifyResponse resp = new PaymentVerifyResponse();
-            resp.setOrderId(order.getPublicId().toString());
-            resp.setStatus(order.getStatus().name());
-            resp.setMessage("Order already verified");
-            return resp;
+            log.info("Order {} already verified, returning cached status", req.getOrderId());
+            return PaymentVerifyResponse.builder()
+                    .orderId(order.getPublicId().toString())
+                    .status(order.getStatus().name())
+                    .message("Order already verified")
+                    .build();
         }
 
         // ---- Sanity checks with Razorpay details from frontend ----
         if (!"RAZORPAY".equalsIgnoreCase(order.getGateway())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order is not a Razorpay order");
+            throw new PaymentException("Order is not a Razorpay order", HttpStatus.BAD_REQUEST, "INVALID_GATEWAY");
         }
 
         if (!order.getGatewayOrderId().equals(req.getRazorpayOrderId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Razorpay orderId mismatch");
+            throw new PaymentException("Razorpay orderId mismatch", HttpStatus.BAD_REQUEST, "ORDER_ID_MISMATCH");
         }
 
         // ---- Razorpay signature check ----
@@ -120,23 +114,30 @@ public class PaymentService {
         String generatedSignature = hmacSha256(payload, razorpayProperties.getKeySecret());
 
         if (!generatedSignature.equals(req.getRazorpaySignature())) {
-            // mark as failed
+            log.warn("Invalid signature for order {}", req.getOrderId());
             order.setStatus(PaymentStatus.FAILED);
             paymentOrderRepository.save(order);
-
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Razorpay signature");
+            throw PaymentException.invalidSignature();
         }
 
         // Signature valid → mark order as paid
         order.setStatus(PaymentStatus.COMPLETED);
         paymentOrderRepository.save(order);
+        log.info("Payment verified successfully for order {}", req.getOrderId());
 
-        PaymentVerifyResponse resp = new PaymentVerifyResponse();
-        resp.setOrderId(order.getPublicId().toString());
-        resp.setStatus(order.getStatus().name());
-        resp.setMessage("Payment verified via Razorpay signature");
+        return PaymentVerifyResponse.builder()
+                .orderId(order.getPublicId().toString())
+                .status(order.getStatus().name())
+                .message("Payment verified via Razorpay signature")
+                .build();
+    }
 
-        return resp;
+    private UUID parseUuid(String orderId) {
+        try {
+            return UUID.fromString(orderId);
+        } catch (IllegalArgumentException e) {
+            throw new PaymentException("Invalid orderId format: " + orderId, HttpStatus.BAD_REQUEST, "INVALID_ORDER_ID");
+        }
     }
 
     // ----------------------------------------------------

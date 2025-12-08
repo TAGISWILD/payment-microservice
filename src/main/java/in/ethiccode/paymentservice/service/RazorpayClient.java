@@ -3,8 +3,9 @@ package in.ethiccode.paymentservice.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.ethiccode.paymentservice.config.RazorpayProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import in.ethiccode.paymentservice.exception.PaymentException;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -16,10 +17,9 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class RazorpayClient {
-
-    private static final Logger log = LoggerFactory.getLogger(RazorpayClient.class);
 
     private final RazorpayProperties props;
     private final ObjectMapper objectMapper;
@@ -29,8 +29,11 @@ public class RazorpayClient {
         this.props = props;
         this.objectMapper = objectMapper;
         this.httpClient = HttpClient.newHttpClient();
+    }
 
-        // 🔍 validate config early
+    @PostConstruct
+    public void init() {
+        // Validate config early
         if (props.getKeyId() == null || props.getKeyId().isBlank()
                 || props.getKeySecret() == null || props.getKeySecret().isBlank()) {
             throw new IllegalStateException(
@@ -73,19 +76,26 @@ public class RazorpayClient {
                     httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                throw new IllegalStateException(
-                        "Razorpay order create failed. Status=" + response.statusCode()
-                                + " body=" + response.body());
+                log.error("Razorpay order create failed. Status={} body={}", response.statusCode(), response.body());
+                throw PaymentException.gatewayError(
+                        "Razorpay order create failed with status " + response.statusCode());
             }
 
             JsonNode root = objectMapper.readTree(response.body());
             JsonNode idNode = root.get("id");
             if (idNode == null || idNode.isNull()) {
-                throw new IllegalStateException("Razorpay response has no 'id': " + response.body());
+                log.error("Razorpay response has no 'id': {}", response.body());
+                throw PaymentException.gatewayError("Razorpay response missing order id");
             }
-            return idNode.asText();
+
+            String orderId = idNode.asText();
+            log.info("Created Razorpay order: {}", orderId);
+            return orderId;
+        } catch (PaymentException pe) {
+            throw pe;
         } catch (Exception ex) {
-            throw new RuntimeException("Error calling Razorpay createOrder", ex);
+            log.error("Error calling Razorpay createOrder: {}", ex.getMessage(), ex);
+            throw PaymentException.gatewayError(ex.getMessage());
         }
     }
 }

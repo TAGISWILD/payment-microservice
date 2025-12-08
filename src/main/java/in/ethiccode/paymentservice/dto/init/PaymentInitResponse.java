@@ -1,36 +1,20 @@
 package in.ethiccode.paymentservice.dto.init;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentInitResponse {
 
     private String orderId;
-    private String gateway;       // "RAZORPAY" or "DUMMY"
-    private String gatewayOrderId;// null (no eazorpay)
+    private String gateway;         // "RAZORPAY" or "DUMMY"
+    private String gatewayOrderId;  // Razorpay order ID (order_XXX)
     private Long amount;
     private String currency;
     private String gatewayKeyId;    // Razorpay key to use in Checkout
-
-
-    public String getOrderId() { return orderId; }
-    public void setOrderId(String orderId) { this.orderId = orderId; }
-
-    public String getGateway() { return gateway; }
-    public void setGateway(String gateway) { this.gateway = gateway; }
-
-    public String getGatewayOrderId() { return gatewayOrderId; }
-    public void setGatewayOrderId(String gatewayOrderId) { this.gatewayOrderId = gatewayOrderId; }
-
-    public Long getAmount() { return amount; }
-    public void setAmount(Long amount) { this.amount = amount; }
-
-    public String getCurrency() { return currency; }
-    public void setCurrency(String currency) { this.currency = currency; }
-
-    public String getGatewayKeyId() {
-        return gatewayKeyId;
-    }
-
-    public void setGatewayKeyId(String gatewayKeyId) {
-        this.gatewayKeyId = gatewayKeyId;
-    }
-
 }
