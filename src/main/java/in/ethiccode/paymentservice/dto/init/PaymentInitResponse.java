@@ -7,6 +7,8 @@ public class PaymentInitResponse {
     private String gatewayOrderId;// null (no eazorpay)
     private Long amount;
     private String currency;
+    private String gatewayKeyId;    // Razorpay key to use in Checkout
+
 
     public String getOrderId() { return orderId; }
     public void setOrderId(String orderId) { this.orderId = orderId; }
@@ -22,4 +24,13 @@ public class PaymentInitResponse {
 
     public String getCurrency() { return currency; }
     public void setCurrency(String currency) { this.currency = currency; }
+
+    public String getGatewayKeyId() {
+        return gatewayKeyId;
+    }
+
+    public void setGatewayKeyId(String gatewayKeyId) {
+        this.gatewayKeyId = gatewayKeyId;
+    }
+
 }

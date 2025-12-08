@@ -1,4 +1,4 @@
-$publicId = "404314d5-c06c-4b3f-95d4-80bfdc956df8"
+$publicId = "bea023fa-3afa-45db-ad7e-557290ff64e8"
 
 $response = Invoke-RestMethod `
     -Uri "http://localhost:8081/api/v1/payments/status/$publicId" `

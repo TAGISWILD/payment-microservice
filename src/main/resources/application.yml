@@ -24,3 +24,8 @@ spring:
 
 server:
   port: 8081
+
+razorpay:
+  keyId: ${RAZORPAY_KEY_ID:}
+  keySecret: ${RAZORPAY_KEY_SECRET:}
+  webhookSecret: ${RAZORPAY_WEBHOOK_SECRET:}  #when verify webhooks

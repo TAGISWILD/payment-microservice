@@ -1,7 +1,8 @@
 {
-    "orderId":  "230128b8-3041-491e-bc1b-81fdede27cda",
-    "gateway":  "DUMMY",
-    "gatewayOrderId":  null,
+    "orderId":  "f1f0952a-3a03-4a27-b2cf-ea7fd52ce9a4",
+    "gateway":  "RAZORPAY",
+    "gatewayOrderId":  "order_Rp79eFzHV1TbSw",
     "amount":  50000,
-    "currency":  "INR"
+    "currency":  "INR",
+    "gatewayKeyId":  "rzp_test_Rp5eLewFu71J8L"
 }

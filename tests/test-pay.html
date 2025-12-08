@@ -1,0 +1,25 @@
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    const options = {
+        key:     "<gatewayKeyId from API>",
+        amount:  50000,             // paise
+        currency:"INR",
+        name:    "EthicCode Payment Test",
+        order_id:"<gatewayOrderId from API>",
+        handler: function (response) {
+            // POST to your backend /verify
+            fetch("http://localhost:8081/api/v1/payments/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    orderId: "<your orderId (UUID) from API>",
+                    razorpayOrderId: response.razorpay_order_id,
+                    razorpayPaymentId: response.razorpay_payment_id,
+                    razorpaySignature: response.razorpay_signature
+                })
+            });
+        }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+</script>

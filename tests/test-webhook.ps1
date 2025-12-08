@@ -8,7 +8,7 @@ $headers = @{
 
 $bodyObject = @{
     event    = "payment.captured"
-    orderId  = "230128b8-3041-491e-bc1b-81fdede27cda"   # must match payment_orders.gateway_order_id (or whatever you use)
+    orderId  = "bea023fa-3afa-45db-ad7e-557290ff64e8"   # must match payment_orders.gateway_order_id (or whatever you use)
     amount   = 50000
     currency = "INR"
 }
