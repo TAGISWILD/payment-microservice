@@ -358,7 +358,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Developed by [EthicCode Technologies](https://github.com/TAGISWILD)**
 
-- **Atharva Chauhan** - *Full Stack Development*
+- **Atharva Chauhan** - *Backend Development*
 - GitHub: [@TAGISWILD](https://github.com/TAGISWILD)
 
 ---
