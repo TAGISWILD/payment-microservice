@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "echo 'Root build script - this should not run'",
-    "heroku-postbuild": "echo '=== Building React Frontend ===' && cd frontend && echo 'Installing dependencies...' && npm ci && echo 'Building React app...' && npm run build && echo '=== React build completed ==='"
+    "heroku-postbuild": "echo '=== Building React Frontend ===' && cd frontend && echo 'Installing dependencies (including dev)...' && npm ci --include=dev && echo 'Building React app...' && npm run build && echo '=== React build completed ==='"
   }
 }
 
