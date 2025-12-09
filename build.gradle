@@ -27,23 +27,28 @@ dependencies {
 // Task to copy React build to Spring Boot static resources
 // Note: React is built by Heroku's Node.js buildpack via heroku-postbuild script
 task copyFrontendBuild(type: Copy) {
-    doFirst {
-        def frontendDist = file('frontend/dist')
-        def staticDir = file('src/main/resources/static')
-        
-        if (frontendDist.exists() && frontendDist.listFiles()?.length > 0) {
-            staticDir.mkdirs()
-            from frontendDist
-            into staticDir
-            println "✓ Copying React build from frontend/dist to src/main/resources/static"
-        } else {
-            println "⚠ Warning: frontend/dist not found or empty. React build may not be available."
-            println "  This is OK if building backend only, but frontend won't be served."
-            // Create empty static directory to avoid errors
-            staticDir.mkdirs()
-        }
+    def frontendDist = file('frontend/dist')
+    def staticDir = file('src/main/resources/static')
+    
+    // Always create the static directory
+    staticDir.mkdirs()
+    
+    if (frontendDist.exists() && frontendDist.listFiles()?.length > 0) {
+        from frontendDist
+        into staticDir
+        println "✓ Copying React build from frontend/dist to src/main/resources/static"
+        println "  Source exists: ${frontendDist.exists()}"
+        println "  Source files: ${frontendDist.listFiles()?.collect { it.name }}"
+    } else {
+        println "⚠ Warning: frontend/dist not found or empty. React build may not be available."
+        println "  Source path: ${frontendDist.absolutePath}"
+        println "  Source exists: ${frontendDist.exists()}"
+        println "  This is OK if building backend only, but frontend won't be served."
     }
 }
+
+// Ensure processResources runs before bootJar and includes static files
+processResources.dependsOn copyFrontendBuild
 
 // Make bootJar depend on frontend build copy (but don't fail if React isn't built)
 bootJar.dependsOn copyFrontendBuild
