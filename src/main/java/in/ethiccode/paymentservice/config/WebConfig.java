@@ -28,10 +28,20 @@ public class WebConfig implements WebMvcConfigurer {
         @Override
         public Resource resolveResource(HttpServletRequest request, String requestPath,
                                        List<? extends Resource> locations, ResourceResolverChain chain) {
+            // Try to resolve the resource normally first
             Resource resource = chain.resolveResource(request, requestPath, locations);
-            if (resource == null && !requestPath.startsWith("/api") && !requestPath.equals("/ping")) {
-                // For non-API routes, serve index.html (React Router will handle routing)
-                resource = new ClassPathResource("/static/index.html");
+            
+            // If resource not found and it's not an API route, serve index.html for SPA routing
+            if (resource == null || !resource.exists()) {
+                // Exclude API routes and health check
+                if (!requestPath.startsWith("/api") && 
+                    !requestPath.equals("/ping") && 
+                    !requestPath.contains(".")) { // Exclude files with extensions
+                    Resource indexHtml = new ClassPathResource("/static/index.html");
+                    if (indexHtml.exists()) {
+                        return indexHtml;
+                    }
+                }
             }
             return resource;
         }

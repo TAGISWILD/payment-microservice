@@ -24,26 +24,24 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
-// Task to build React frontend
-task buildFrontend(type: Exec) {
-    workingDir 'frontend'
-    commandLine 'npm', 'ci'
-    doLast {
-        exec {
-            workingDir 'frontend'
-            commandLine 'npm', 'run', 'build'
+// Task to copy React build to Spring Boot static resources
+// Note: React is built by Heroku's Node.js buildpack via heroku-postbuild script
+task copyFrontendBuild(type: Copy) {
+    // Only copy if frontend/dist exists (built by Node.js buildpack)
+    if (file('frontend/dist').exists()) {
+        from 'frontend/dist'
+        into 'src/main/resources/static'
+        doFirst {
+            file('src/main/resources/static').mkdirs()
         }
+        println "Copying React build from frontend/dist to src/main/resources/static"
+    } else {
+        println "Warning: frontend/dist not found. React build may not be available."
+        println "This is OK if building backend only, but frontend won't be served."
     }
 }
 
-// Task to copy React build to Spring Boot static resources
-task copyFrontendBuild(type: Copy) {
-    dependsOn buildFrontend
-    from 'frontend/dist'
-    into 'src/main/resources/static'
-}
-
-// Make bootJar depend on frontend build
+// Make bootJar depend on frontend build copy
 bootJar.dependsOn copyFrontendBuild
 
 test {

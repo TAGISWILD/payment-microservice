@@ -2,13 +2,7 @@
   "name": "payment-service",
   "version": "1.0.0",
   "scripts": {
-    "start": "concurrently \"npm:start:backend\" \"npm:start:frontend\"",
-    "start:backend": "java -Dserver.port=$PORT -jar build/libs/payment-service-1.0-SNAPSHOT.jar",
-    "start:frontend": "cd frontend && npm run build && npm run preview -- --port ${FRONTEND_PORT:-5173} --host 0.0.0.0",
-    "build": "cd frontend && npm install && npm run build"
-  },
-  "dependencies": {
-    "concurrently": "^8.2.2"
+    "heroku-postbuild": "cd frontend && npm ci && npm run build"
   }
 }
 
