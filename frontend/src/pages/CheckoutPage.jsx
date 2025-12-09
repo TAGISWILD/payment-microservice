@@ -242,16 +242,24 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Test Card Info */}
-            <div className="mt-4 md:mt-6 p-3 md:p-4 bg-[var(--color-bg-panel)] rounded-lg border border-[var(--color-border)]">
+            {/* UPI Payment Info */}
+            <div className="mt-4 md:mt-6 p-3 md:p-4 bg-[var(--color-bg-panel)] rounded-lg border border-[var(--color-border)] border-[var(--color-accent)]/30">
               <p className="text-xs md:text-sm font-medium mb-2 flex items-center gap-2">
-                <span>🧪</span>
-                <span className="text-xs md:text-sm">Test Mode - Use these credentials:</span>
+                <span>💳</span>
+                <span className="text-xs md:text-sm text-[var(--color-accent)]">⚠️ Use UPI for Quicker Demo</span>
               </p>
-              <div className="text-[10px] md:text-xs text-[var(--color-text-muted)] space-y-1 font-mono">
-                <p>Card: <span className="text-[var(--color-accent)]">4111 1111 1111 1111</span></p>
-                <p>Expiry: <span className="text-[var(--color-accent)]">Any future date</span></p>
-                <p>CVV: <span className="text-[var(--color-accent)]">Any 3 digits</span></p>
+              <div className="text-[10px] md:text-xs text-[var(--color-text-muted)] space-y-2">
+                <p className="font-semibold text-[var(--color-accent)]">
+                  Please use <strong>UPI payment method</strong> for faster demonstration
+                </p>
+                <p className="text-[9px] md:text-[10px]">
+                  • Select "UPI" option in Razorpay checkout<br/>
+                  • Use any UPI ID (e.g., test@paytm, test@ybl)<br/>
+                  • Complete payment quickly without entering card details
+                </p>
+                <p className="text-[9px] md:text-[10px] italic mt-2 pt-2 border-t border-[var(--color-border)]">
+                  Note: This is Razorpay test mode - no real money will be charged
+                </p>
               </div>
             </div>
           </div>
