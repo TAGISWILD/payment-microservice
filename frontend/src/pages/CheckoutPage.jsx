@@ -166,13 +166,13 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen pt-24 pb-[450px] px-4">
+      <div className="min-h-screen pt-4 md:pt-24 pb-24 md:pb-[450px] px-3 md:px-4">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="text-8xl mb-6">🛒</div>
-          <h1 className="text-3xl font-bold mb-4">No items to checkout</h1>
+          <div className="text-6xl md:text-8xl mb-4 md:mb-6">🛒</div>
+          <h1 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">No items to checkout</h1>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-6 py-3 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-6 py-3 rounded-lg transition-colors text-sm md:text-base"
           >
             <span>←</span>
             <span>Browse Products</span>
@@ -183,21 +183,21 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-[450px] px-4">
+    <div className="min-h-screen pt-4 md:pt-24 pb-24 md:pb-[450px] px-3 md:px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Checkout</h1>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
           {/* Customer Form */}
-          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl p-6">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+          <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2">
               <span>👤</span>
-              Customer Information
+              <span className="text-sm md:text-xl">Customer Information</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[var(--color-text-muted)] mb-2">
+                <label className="block text-xs md:text-sm text-[var(--color-text-muted)] mb-2">
                   Full Name
                 </label>
                 <input
@@ -206,13 +206,13 @@ export default function CheckoutPage() {
                   value={customerInfo.name}
                   onChange={handleInputChange}
                   placeholder="John Doe"
-                  className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                  className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg px-4 py-3 md:py-3 text-sm md:text-base focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                   disabled={isProcessing}
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-[var(--color-text-muted)] mb-2">
+                <label className="block text-xs md:text-sm text-[var(--color-text-muted)] mb-2">
                   Email Address
                 </label>
                 <input
@@ -221,13 +221,13 @@ export default function CheckoutPage() {
                   value={customerInfo.email}
                   onChange={handleInputChange}
                   placeholder="john@example.com"
-                  className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                  className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg px-4 py-3 md:py-3 text-sm md:text-base focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                   disabled={isProcessing}
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-[var(--color-text-muted)] mb-2">
+                <label className="block text-xs md:text-sm text-[var(--color-text-muted)] mb-2">
                   Phone Number
                 </label>
                 <input
@@ -236,19 +236,19 @@ export default function CheckoutPage() {
                   value={customerInfo.contact}
                   onChange={handleInputChange}
                   placeholder="9876543210"
-                  className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg px-4 py-3 focus:outline-none focus:border-[var(--color-primary)] transition-colors"
+                  className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-lg px-4 py-3 md:py-3 text-sm md:text-base focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                   disabled={isProcessing}
                 />
               </div>
             </div>
 
             {/* Test Card Info */}
-            <div className="mt-6 p-4 bg-[var(--color-bg-panel)] rounded-lg border border-[var(--color-border)]">
-              <p className="text-sm font-medium mb-2 flex items-center gap-2">
+            <div className="mt-4 md:mt-6 p-3 md:p-4 bg-[var(--color-bg-panel)] rounded-lg border border-[var(--color-border)]">
+              <p className="text-xs md:text-sm font-medium mb-2 flex items-center gap-2">
                 <span>🧪</span>
-                Test Mode - Use these credentials:
+                <span className="text-xs md:text-sm">Test Mode - Use these credentials:</span>
               </p>
-              <div className="text-xs text-[var(--color-text-muted)] space-y-1 font-mono">
+              <div className="text-[10px] md:text-xs text-[var(--color-text-muted)] space-y-1 font-mono">
                 <p>Card: <span className="text-[var(--color-accent)]">4111 1111 1111 1111</span></p>
                 <p>Expiry: <span className="text-[var(--color-accent)]">Any future date</span></p>
                 <p>CVV: <span className="text-[var(--color-accent)]">Any 3 digits</span></p>
@@ -258,22 +258,22 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div>
-            <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl p-6">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <div className="bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl p-4 md:p-6 sticky bottom-24 md:static">
+              <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6 flex items-center gap-2">
                 <span>📦</span>
-                Order Summary
+                <span className="text-sm md:text-xl">Order Summary</span>
               </h2>
 
-              <div className="space-y-3 mb-6">
+              <div className="space-y-2 md:space-y-3 mb-4 md:mb-6">
                 {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span className="text-[var(--color-text-muted)]">
+                  <div key={item.id} className="flex justify-between text-xs md:text-sm">
+                    <span className="text-[var(--color-text-muted)] truncate pr-2">
                       {item.name} × {item.quantity}
                     </span>
-                    <span>{formatPrice(item.price * item.quantity)}</span>
+                    <span className="flex-shrink-0">{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 ))}
-                <div className="border-t border-[var(--color-border)] pt-3 flex justify-between font-bold text-lg">
+                <div className="border-t border-[var(--color-border)] pt-3 flex justify-between font-bold text-base md:text-lg">
                   <span>Total</span>
                   <span className="text-[var(--color-accent)]">{formatPrice(totalAmount)}</span>
                 </div>
@@ -282,7 +282,7 @@ export default function CheckoutPage() {
               <button
                 onClick={handleCheckout}
                 disabled={isProcessing}
-                className="w-full flex items-center justify-center gap-2 bg-[var(--color-accent)] hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-4 rounded-lg transition-colors font-bold text-lg"
+                className="w-full flex items-center justify-center gap-2 bg-[var(--color-accent)] hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 md:py-4 rounded-lg transition-colors font-bold text-base md:text-lg active:scale-[0.98]"
               >
                 {isProcessing ? (
                   <>
@@ -300,9 +300,9 @@ export default function CheckoutPage() {
 
             {/* Current Step Indicator */}
             {currentStep && (
-              <div className="mt-4 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-xl p-4">
-                <p className="text-sm font-medium mb-3">Processing Steps:</p>
-                <div className="space-y-2 text-sm">
+              <div className="mt-4 bg-[var(--color-bg-panel)] border border-[var(--color-border)] rounded-xl p-3 md:p-4">
+                <p className="text-xs md:text-sm font-medium mb-2 md:mb-3">Processing Steps:</p>
+                <div className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
                   <StepIndicator
                     step="loading-razorpay"
                     currentStep={currentStep}

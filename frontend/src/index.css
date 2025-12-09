@@ -24,6 +24,13 @@ body {
   background: linear-gradient(135deg, var(--color-bg-dark) 0%, #1a1a2e 100%);
   color: var(--color-text);
   min-height: 100vh;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+/* Safe area for mobile devices with notches */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Code/terminal font */
