@@ -6,7 +6,8 @@
     "npm": ">=9.0.0"
   },
   "scripts": {
-    "heroku-postbuild": "echo 'Building React frontend...' && cd frontend && npm ci && npm run build && echo 'React build completed successfully'"
+    "build": "echo 'Root build script - this should not run'",
+    "heroku-postbuild": "echo '=== Building React Frontend ===' && cd frontend && echo 'Installing dependencies...' && npm ci && echo 'Building React app...' && npm run build && echo '=== React build completed ==='"
   }
 }
 
