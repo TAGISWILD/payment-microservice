@@ -179,6 +179,34 @@ The frontend will start at **http://localhost:5173**
 
 ---
 
+## ☁️ Deploying to Heroku
+
+Backend only (Spring Boot):
+
+1. Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) and log in  
+   `heroku login`
+2. Create the app on the current repo and set the stack to Heroku-22 (Java 17 ready)  
+   `heroku create <your-app-name> --stack heroku-22`
+3. Provision Postgres  
+   `heroku addons:create heroku-postgresql:mini`
+4. Set secrets (replace with your real keys)  
+   `heroku config:set RAZORPAY_KEY_ID=... RAZORPAY_KEY_SECRET=... RAZORPAY_WEBHOOK_SECRET=...`
+5. Build the fat jar locally (Heroku will also build, but this verifies)  
+   `./gradlew clean bootJar`
+6. Push to Heroku for deployment  
+   `git push heroku main`  *(or the branch you deploy from)*
+7. Run the schema once against the provisioned DB  
+   `heroku run bash --app <your-app-name> -c "psql $DATABASE_URL -f src/main/resources/schema.sql"`
+8. Verify health  
+   `heroku open /ping`
+
+Notes:
+- `Procfile` already starts the app with `java -Dserver.port=$PORT -jar build/libs/payment-service-1.0-SNAPSHOT.jar`
+- `application.yml` reads `JDBC_DATABASE_URL/USERNAME/PASSWORD` and `PORT`, which Heroku injects automatically.
+- Frontend: deploy separately (e.g., Netlify/Vercel). Update its API base URL to your Heroku app.
+
+---
+
 ## 📡 API Endpoints
 
 ### Payment Endpoints

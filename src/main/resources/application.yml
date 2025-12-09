@@ -3,9 +3,10 @@ spring:
     name: payment-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/paymentdb
-    username: payment_user
-    password: payment_pass
+    # Heroku exposes JDBC_DATABASE_URL/USERNAME/PASSWORD automatically
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/paymentdb}
+    username: ${JDBC_DATABASE_USERNAME:payment_user}
+    password: ${JDBC_DATABASE_PASSWORD:payment_pass}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -19,11 +20,11 @@ spring:
 
   sql:
     init:
-      mode: never              # <- force run schema.sql on startup
+      mode: never               # Set to 'always' for first run, then 'never'
       schema-locations: classpath:schema.sql
 
 server:
-  port: 8081
+  port: ${PORT:8081}            # Heroku injects PORT at runtime
 
 razorpay:
   keyId: ${RAZORPAY_KEY_ID:}
