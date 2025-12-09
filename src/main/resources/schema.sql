@@ -148,19 +148,42 @@ CREATE TABLE IF NOT EXISTS webhook_events (
                                 id                      BIGSERIAL PRIMARY KEY,
 
                                 gateway                 VARCHAR(50) NOT NULL,
-                                event_id                VARCHAR(150) NOT NULL,     -- unique per event
-                                event_type              VARCHAR(100),
+                                event_type              VARCHAR(100) NOT NULL,
 
                                 payload                 JSONB NOT NULL,
+                                headers                 JSONB,
 
-                                processed               BOOLEAN NOT NULL DEFAULT FALSE,
-                                processed_at            TIMESTAMPTZ,
+                                status                  VARCHAR(20) NOT NULL DEFAULT 'RECEIVED',  -- RECEIVED | PROCESSED | FAILED
+                                error_message           TEXT,
 
-                                created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                                received_at             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                                processed_at            TIMESTAMPTZ
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS ux_webhook_events_gateway_event
-    ON webhook_events (gateway, event_id);
+-- Add missing columns to existing table (idempotent)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'webhook_events' AND column_name = 'headers') THEN
+        ALTER TABLE webhook_events ADD COLUMN headers JSONB;
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'webhook_events' AND column_name = 'status') THEN
+        ALTER TABLE webhook_events ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'RECEIVED';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'webhook_events' AND column_name = 'error_message') THEN
+        ALTER TABLE webhook_events ADD COLUMN error_message TEXT;
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'webhook_events' AND column_name = 'received_at') THEN
+        ALTER TABLE webhook_events ADD COLUMN received_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+    END IF;
+    
+    -- Ensure event_type is NOT NULL (if column exists)
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'webhook_events' AND column_name = 'event_type') THEN
+        ALTER TABLE webhook_events ALTER COLUMN event_type SET NOT NULL;
+    END IF;
+END $$;
 
 
 ------------------------------------------------------------
