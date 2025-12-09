@@ -8,6 +8,14 @@ spring:
     username: ${JDBC_DATABASE_USERNAME:${DATABASE_USERNAME:payment_user}}
     password: ${JDBC_DATABASE_PASSWORD:${DATABASE_PASSWORD:payment_pass}}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      # Connection pool configuration for handling concurrent requests
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
 
   jpa:
     hibernate:

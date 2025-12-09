@@ -28,7 +28,10 @@ public class RazorpayClient {
     public RazorpayClient(RazorpayProperties props, ObjectMapper objectMapper) {
         this.props = props;
         this.objectMapper = objectMapper;
-        this.httpClient = HttpClient.newHttpClient();
+        // Configure HttpClient with proper connection pooling for concurrent requests
+        this.httpClient = HttpClient.newBuilder()
+                .connectTimeout(java.time.Duration.ofSeconds(10))
+                .build();
     }
 
     @PostConstruct

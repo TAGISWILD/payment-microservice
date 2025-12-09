@@ -4,7 +4,8 @@ const BackendActivityContext = createContext(null);
 
 export function BackendActivityProvider({ children }) {
   const [activities, setActivities] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(true);
+  // Keep the activity panel collapsed by default (especially for mobile)
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const addActivity = useCallback((activity) => {
     const newActivity = {
