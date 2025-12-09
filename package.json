@@ -1,8 +1,12 @@
 {
   "name": "payment-service",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
-    "heroku-postbuild": "cd frontend && npm ci && npm run build"
+    "heroku-postbuild": "echo 'Building React frontend...' && cd frontend && npm ci && npm run build && echo 'React build completed successfully'"
   }
 }
 
