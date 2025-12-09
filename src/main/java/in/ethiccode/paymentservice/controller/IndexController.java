@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,8 +15,9 @@ import java.nio.charset.StandardCharsets;
 @Controller
 public class IndexController {
 
-    // Fallback: serve index.html for root and SPA routes
-    @GetMapping(value = {"/", "/{path:[^\\.]*}", "/**/{path:[^\\.]*}"})
+    // Fallback: serve index.html for root route
+    // WebConfig handles other SPA routes via ResourceResolver
+    @GetMapping("/")
     public ResponseEntity<?> serveIndex() {
         try {
             Resource resource = new ClassPathResource("/static/index.html");
