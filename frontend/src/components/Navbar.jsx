@@ -12,7 +12,7 @@ export default function Navbar() {
           <span className="text-2xl">🛒</span>
           <span className="font-bold text-lg">DevStore</span>
           <span className="text-xs bg-[var(--color-primary)] px-2 py-0.5 rounded-full">
-            Demo
+            Nexus Demo
           </span>
         </Link>
 
