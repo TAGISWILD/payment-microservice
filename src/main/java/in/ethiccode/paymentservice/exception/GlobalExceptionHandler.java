@@ -89,6 +89,15 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handle missing static resources (like favicon.ico) - return 404 silently
+     */
+    @ExceptionHandler(org.springframework.web.servlet.resource.NoResourceFoundException.class)
+    public ResponseEntity<Void> handleNoResourceFound(org.springframework.web.servlet.resource.NoResourceFoundException ex) {
+        // Silently return 404 for missing static resources (favicon, etc.)
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
      * Catch-all for unexpected exceptions
      */
     @ExceptionHandler(Exception.class)
