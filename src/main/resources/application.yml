@@ -3,10 +3,10 @@ spring:
     name: payment-service
 
   datasource:
-    # Heroku exposes JDBC_DATABASE_URL/USERNAME/PASSWORD automatically
-    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/paymentdb}
-    username: ${JDBC_DATABASE_USERNAME:payment_user}
-    password: ${JDBC_DATABASE_PASSWORD:payment_pass}
+    # Prefer Heroku-provided JDBC vars, then DATABASE_URL, else local defaults
+    url: ${JDBC_DATABASE_URL:${DATABASE_URL:jdbc:postgresql://localhost:5432/paymentdb}}
+    username: ${JDBC_DATABASE_USERNAME:${DATABASE_USERNAME:payment_user}}
+    password: ${JDBC_DATABASE_PASSWORD:${DATABASE_PASSWORD:payment_pass}}
     driver-class-name: org.postgresql.Driver
 
   jpa:
