@@ -63,3 +63,4 @@ export const formatPrice = (paise) => {
   }).format(paise / 100);
 };
 
+

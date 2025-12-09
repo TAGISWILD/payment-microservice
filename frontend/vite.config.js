@@ -12,5 +12,11 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    // Use root path since served from Spring Boot root
+    base: '/'
   }
 })

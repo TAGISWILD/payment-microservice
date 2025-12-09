@@ -1,0 +1,33 @@
+{
+  "name": "Payment Microservice",
+  "description": "Spring Boot + React payment service",
+  "repository": "https://github.com/TAGISWILD/payment-microservice",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/gradle"
+    }
+  ],
+  "env": {
+    "RAZORPAY_KEY_ID": {
+      "required": true,
+      "description": "Your Razorpay Key ID"
+    },
+    "RAZORPAY_KEY_SECRET": {
+      "required": true,
+      "description": "Your Razorpay Key Secret"
+    },
+    "RAZORPAY_WEBHOOK_SECRET": {
+      "required": false,
+      "description": "Your Razorpay Webhook Secret"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  }
+}
+

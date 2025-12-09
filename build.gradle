@@ -24,6 +24,28 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
+// Task to build React frontend
+task buildFrontend(type: Exec) {
+    workingDir 'frontend'
+    commandLine 'npm', 'ci'
+    doLast {
+        exec {
+            workingDir 'frontend'
+            commandLine 'npm', 'run', 'build'
+        }
+    }
+}
+
+// Task to copy React build to Spring Boot static resources
+task copyFrontendBuild(type: Copy) {
+    dependsOn buildFrontend
+    from 'frontend/dist'
+    into 'src/main/resources/static'
+}
+
+// Make bootJar depend on frontend build
+bootJar.dependsOn copyFrontendBuild
+
 test {
     useJUnitPlatform()
 }

@@ -1,26 +1,11 @@
-# =========================
-# Spring Boot / Java
-# =========================
-HELP.md
+# Gradle
 .gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### IntelliJ IDEA ###
+# IntelliJ IDEA
 .idea/
 *.iws
 *.iml
@@ -29,70 +14,41 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
 
-### VS Code ###
+# VS Code
 .vscode/
 
-# =========================
-# Node / React Frontend
-# =========================
+# Mac
+.DS_Store
+
+# Node
+node_modules/
 frontend/node_modules/
 frontend/dist/
-frontend/.env
-frontend/.env.local
-frontend/.env.*.local
+frontend/.vite/
 
-# Debug logs
-frontend/npm-debug.log*
-frontend/yarn-debug.log*
-frontend/yarn-error.log*
-
-# =========================
-# Environment & Secrets
-# =========================
-.env
-.env.local
-.env.*.local
-*.env
-
-# Never commit credentials
-application-local.yml
-application-dev.yml
-application-prod.yml
-secrets.yml
-
-# =========================
-# OS Generated Files
-# =========================
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# =========================
-# Test Output
-# =========================
-tests/last-order.json
-
-# =========================
 # Logs
-# =========================
 *.log
 logs/
 
-# =========================
-# Temporary Files
-# =========================
-*.tmp
-*.temp
-*.swp
-*~
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Spring Boot
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# Application specific
+src/main/resources/static/

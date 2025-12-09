@@ -1,4 +1,6 @@
-const API_BASE = '/api/v1/payments';
+// Use environment variable for API base URL, fallback to relative path for same-domain deployment
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE = `${API_BASE_URL}/api/v1/payments`;
 
 export async function initiatePayment(orderData) {
   const response = await fetch(`${API_BASE}/init`, {
