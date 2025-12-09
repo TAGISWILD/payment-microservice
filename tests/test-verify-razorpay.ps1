@@ -1,6 +1,6 @@
 param(
     [string]$BaseUrl = "http://localhost:8081",
-    [string]$RazorpaySecret = "tZmzu3jEBaKSRafWZLwJBhjY"
+    [string]$RazorpaySecret = "RZRPSECRET"
 )
 
 $uri = "$BaseUrl/api/v1/payments/verify"
