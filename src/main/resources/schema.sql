@@ -11,7 +11,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 --  Represents applications/tenants allowed to use this service
 ------------------------------------------------------------
 
-CREATE TABLE api_clients (
+CREATE TABLE IF NOT EXISTS api_clients (
                              id              BIGSERIAL PRIMARY KEY,
                              name            VARCHAR(100) NOT NULL,
                              api_key         VARCHAR(200) NOT NULL,  -- store hashed or raw token
@@ -21,7 +21,7 @@ CREATE TABLE api_clients (
                              updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX ux_api_clients_api_key
+CREATE UNIQUE INDEX IF NOT EXISTS ux_api_clients_api_key
     ON api_clients (api_key);
 
 
@@ -29,13 +29,13 @@ CREATE UNIQUE INDEX ux_api_clients_api_key
 --  PAYMENT ORDERS (generic "intent to pay")
 ------------------------------------------------------------
 
-CREATE TABLE payment_orders (
+CREATE TABLE IF NOT EXISTS payment_orders (
                                 id                      BIGSERIAL PRIMARY KEY,
                                 public_id               UUID NOT NULL DEFAULT gen_random_uuid(),
 
                                 client_id               BIGINT REFERENCES api_clients(id),
 
-                                external_reference_id   VARCHAR(100),       -- caller’s own reference
+                                external_reference_id   VARCHAR(100),       -- caller's own reference
                                 amount                  BIGINT NOT NULL,    -- paise/cents
                                 currency                VARCHAR(10) NOT NULL,
 
@@ -55,13 +55,13 @@ CREATE TABLE payment_orders (
                                 updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX ux_payment_orders_public_id
+CREATE UNIQUE INDEX IF NOT EXISTS ux_payment_orders_public_id
     ON payment_orders (public_id);
 
-CREATE UNIQUE INDEX ux_payment_orders_gateway_order
+CREATE UNIQUE INDEX IF NOT EXISTS ux_payment_orders_gateway_order
     ON payment_orders (gateway, gateway_order_id);
 
-CREATE INDEX ix_payment_orders_external_ref
+CREATE INDEX IF NOT EXISTS ix_payment_orders_external_ref
     ON payment_orders (external_reference_id);
 
 
@@ -69,7 +69,7 @@ CREATE INDEX ix_payment_orders_external_ref
 --  PAYMENTS (actual payment attempts/transactions)
 ------------------------------------------------------------
 
-CREATE TABLE payments (
+CREATE TABLE IF NOT EXISTS payments (
                           id                      BIGSERIAL PRIMARY KEY,
                           public_id               UUID NOT NULL DEFAULT gen_random_uuid(),
 
@@ -91,16 +91,16 @@ CREATE TABLE payments (
                           updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX ux_payments_public_id
+CREATE UNIQUE INDEX IF NOT EXISTS ux_payments_public_id
     ON payments (public_id);
 
-CREATE UNIQUE INDEX ux_payments_gateway_payment
+CREATE UNIQUE INDEX IF NOT EXISTS ux_payments_gateway_payment
     ON payments (gateway, gateway_payment_id);
 
-CREATE INDEX ix_payments_order_id
+CREATE INDEX IF NOT EXISTS ix_payments_order_id
     ON payments (order_id);
 
-CREATE INDEX ix_payments_status
+CREATE INDEX IF NOT EXISTS ix_payments_status
     ON payments (status);
 
 
@@ -108,7 +108,7 @@ CREATE INDEX ix_payments_status
 --  REFUNDS (refund operations)
 ------------------------------------------------------------
 
-CREATE TABLE refunds (
+CREATE TABLE IF NOT EXISTS refunds (
                          id                      BIGSERIAL PRIMARY KEY,
                          public_id               UUID NOT NULL DEFAULT gen_random_uuid(),
 
@@ -130,13 +130,13 @@ CREATE TABLE refunds (
                          updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX ux_refunds_public_id
+CREATE UNIQUE INDEX IF NOT EXISTS ux_refunds_public_id
     ON refunds (public_id);
 
-CREATE UNIQUE INDEX ux_refunds_gateway_refund
+CREATE UNIQUE INDEX IF NOT EXISTS ux_refunds_gateway_refund
     ON refunds (gateway, gateway_refund_id);
 
-CREATE INDEX ix_refunds_payment_id
+CREATE INDEX IF NOT EXISTS ix_refunds_payment_id
     ON refunds (payment_id);
 
 
@@ -144,7 +144,7 @@ CREATE INDEX ix_refunds_payment_id
 --  WEBHOOK EVENTS (idempotency protection)
 ------------------------------------------------------------
 
-CREATE TABLE webhook_events (
+CREATE TABLE IF NOT EXISTS webhook_events (
                                 id                      BIGSERIAL PRIMARY KEY,
 
                                 gateway                 VARCHAR(50) NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE webhook_events (
                                 created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX ux_webhook_events_gateway_event
+CREATE UNIQUE INDEX IF NOT EXISTS ux_webhook_events_gateway_event
     ON webhook_events (gateway, event_id);
 
 
