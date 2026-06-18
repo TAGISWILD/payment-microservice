@@ -1,94 +1,70 @@
-# 💳 Payment Microservice
+# Payment Microservice
 
-A production-ready **Payment Microservice** built with Spring Boot and React, featuring Razorpay integration for seamless payment processing.
+Razorpay payment-service starter with a Spring Boot foundation, PostgreSQL schema, and a React demo store that shows the checkout flow end to end.
 
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.5-brightgreen?style=flat-square&logo=spring)
-![React](https://img.shields.io/badge/React-18-blue?style=flat-square&logo=react)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql)
-![Razorpay](https://img.shields.io/badge/Razorpay-Integrated-purple?style=flat-square)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=111827)
+![Razorpay](https://img.shields.io/badge/Razorpay-Test%20Mode-0B72E7?style=for-the-badge)
 
----
+## What It Does
 
-## 🎯 Overview
+This repo is a payment integration sandbox for building a production-grade payment service.
 
-This microservice provides a complete payment solution that can be integrated into any application. It handles:
+- Models payment orders, payment attempts, refunds, and webhook events in PostgreSQL
+- Demonstrates a React checkout flow using Razorpay Checkout
+- Includes PowerShell/API test scripts for init, verify, status, and webhook calls
+- Keeps payment secrets in environment variables
+- Provides a clean base for turning the service into a reusable backend module
 
-- **Payment Initiation** - Create orders and generate Razorpay checkout sessions
-- **Payment Verification** - Cryptographic signature verification (HMAC-SHA256)
-- **Webhook Processing** - Handle async payment notifications from Razorpay
-- **Payment Status** - Query payment status at any time
+## Architecture
 
-### 🏗️ Architecture
-
+```text
+React demo store
+      |
+      |  /api/v1/payments/init
+      v
+Spring Boot payment service
+      |
+      |  orders, payments, refunds, webhook_events
+      v
+PostgreSQL
+      |
+      |  Razorpay order/payment/webhook flow
+      v
+Razorpay Checkout
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   React App     │────▶│  Spring Boot    │────▶│   PostgreSQL    │
-│   (Frontend)    │     │   (Backend)     │     │   (Database)    │
-└─────────────────┘     └────────┬────────┘     └─────────────────┘
-                                 │
-                                 ▼
-                        ┌─────────────────┐
-                        │    Razorpay     │
-                        │   (Gateway)     │
-                        └─────────────────┘
-```
 
----
+## Current Status
 
-## ✨ Features
+| Layer | Status |
+| --- | --- |
+| React checkout demo | Present |
+| PostgreSQL schema | Present |
+| Razorpay test scripts | Present |
+| Spring Boot project setup | Present |
+| Full backend controllers/services | In progress |
 
-| Feature | Description |
-|---------|-------------|
-| 🔐 **Secure Payments** | HMAC-SHA256 signature verification |
-| 🔄 **Idempotent APIs** | Safe retry handling |
-| 📊 **Webhook Support** | Real-time payment status updates |
-| 🎨 **Demo Frontend** | React app with live backend activity panel |
-| ✅ **Input Validation** | Jakarta Bean Validation |
-| 🚨 **Error Handling** | Global exception handler with structured responses |
-| 📝 **Logging** | Comprehensive SLF4J logging |
+## Tech Stack
 
----
+| Area | Tools |
+| --- | --- |
+| Backend | Java, Spring Boot, Gradle |
+| Database | PostgreSQL, `pgcrypto`, JSONB |
+| Frontend | React, Vite, React Router, Tailwind CSS |
+| Gateway | Razorpay Checkout |
+| Testing | PowerShell scripts, HTML checkout test page |
 
-## 🛠️ Tech Stack
+## Quick Start
 
-### Backend
-- **Java 17+**
-- **Spring Boot 3.3.5**
-- **Spring Data JPA**
-- **PostgreSQL**
-- **Gradle**
-
-### Frontend
-- **React 18**
-- **Vite**
-- **Tailwind CSS**
-- **React Router**
-
----
-
-## 📋 Prerequisites
-
-Before you begin, ensure you have:
-
-- [Java 17+](https://adoptium.net/) installed
-- [Node.js 18+](https://nodejs.org/) installed
-- [PostgreSQL 14+](https://www.postgresql.org/) running
-- [Razorpay Account](https://razorpay.com/) (Test mode is free)
-
----
-
-## 🚀 Getting Started
-
-### 1️⃣ Clone the Repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/TAGISWILD/payment-microservice.git
 cd payment-microservice
 ```
 
-### 2️⃣ Database Setup
-
-Create a PostgreSQL database:
+### 2. Create The Database
 
 ```sql
 CREATE DATABASE paymentdb;
@@ -96,283 +72,86 @@ CREATE USER payment_user WITH PASSWORD 'payment_pass';
 GRANT ALL PRIVILEGES ON DATABASE paymentdb TO payment_user;
 ```
 
-Then run the schema:
+Then apply the schema:
 
 ```bash
 psql -U payment_user -d paymentdb -f src/main/resources/schema.sql
 ```
 
-### 3️⃣ Razorpay Credentials
-
-1. Sign up at [Razorpay Dashboard](https://dashboard.razorpay.com/)
-2. Go to **Settings → API Keys**
-3. Generate **Test Mode** keys
-
-You'll get:
-- `Key ID` (starts with `rzp_test_`)
-- `Key Secret`
-
-#### Option A: Environment Variables (Recommended)
+### 3. Add Razorpay Test Credentials
 
 ```bash
-# Linux/Mac
 export RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxx
-export RAZORPAY_KEY_SECRET=your_secret_key
-export RAZORPAY_WEBHOOK_SECRET=your_webhook_secret  # Optional
-
-# Windows PowerShell
-$env:RAZORPAY_KEY_ID="rzp_test_xxxxxxxxxxxxx"
-$env:RAZORPAY_KEY_SECRET="your_secret_key"
-$env:RAZORPAY_WEBHOOK_SECRET="your_webhook_secret"
-
-# Windows CMD
-set RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxx
-set RAZORPAY_KEY_SECRET=your_secret_key
+export RAZORPAY_KEY_SECRET=your_test_secret
+export RAZORPAY_WEBHOOK_SECRET=your_webhook_secret
 ```
 
-#### Option B: Application Properties
+Never commit real payment credentials.
 
-Edit `src/main/resources/application.yml`:
-
-```yaml
-razorpay:
-  keyId: rzp_test_xxxxxxxxxxxxx
-  keySecret: your_secret_key
-  webhookSecret: your_webhook_secret  # Optional
-```
-
-> ⚠️ **Never commit real credentials to Git!**
-
-### 4️⃣ Build & Run Backend
+### 4. Run Backend
 
 ```bash
-# Build the project
-./gradlew build
-
-# Run the application
 ./gradlew bootRun
 ```
 
-The backend will start at **http://localhost:8081**
+Default backend port: `8081`
 
-#### Verify it's running:
-
-```bash
-curl http://localhost:8081/ping
-# Response: payment-service: K01
-```
-
-### 5️⃣ Setup & Run Frontend
+### 5. Run Frontend Demo
 
 ```bash
-# Navigate to frontend directory
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 
-The frontend will start at **http://localhost:5173**
+Default frontend URL: `http://localhost:5173`
 
----
+## Planned API Surface
 
-## 📡 API Endpoints
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/v1/payments/init` | Create local order and Razorpay order |
+| `POST` | `/api/v1/payments/verify` | Verify Razorpay payment signature |
+| `GET` | `/api/v1/payments/status/{orderId}` | Read payment/order status |
+| `POST` | `/api/v1/payments/webhook` | Receive Razorpay webhook events |
 
-### Payment Endpoints
+## Database Model
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/v1/payments/init` | Initiate a new payment |
-| `POST` | `/api/v1/payments/verify` | Verify payment signature |
-| `GET` | `/api/v1/payments/status/{orderId}` | Get payment status |
-| `POST` | `/api/v1/payments/webhook` | Receive Razorpay webhooks |
+The schema is designed around five core tables:
 
-### Health Check
+| Table | Purpose |
+| --- | --- |
+| `api_clients` | Optional client/tenant access layer |
+| `payment_orders` | Intent to pay, gateway order mapping, customer metadata |
+| `payments` | Payment attempts and final payment state |
+| `refunds` | Refund tracking |
+| `webhook_events` | Idempotent webhook processing |
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/ping` | Health check |
+## Test Helpers
 
----
+The `tests/` directory contains scripts for local API testing:
 
-## 📝 API Usage
+| File | Use |
+| --- | --- |
+| `test-payment.ps1` | Calls payment init |
+| `test-verify.ps1` | Calls verify endpoint with a dummy payment id |
+| `test-verify-razorpay.ps1` | Generates an HMAC-style Razorpay test signature |
+| `test-status.ps1` | Reads order status |
+| `test-webhook.ps1` | Sends a sample webhook payload |
+| `test-pay.html` | Minimal Razorpay Checkout page |
 
-### Initiate Payment
+## Roadmap
 
-```bash
-curl -X POST http://localhost:8081/api/v1/payments/init \
-  -H "Content-Type: application/json" \
-  -d '{
-    "amount": 50000,
-    "currency": "INR",
-    "externalReferenceId": "ORDER-123",
-    "description": "Premium Plan",
-    "customer": {
-      "name": "John Doe",
-      "email": "john@example.com",
-      "contact": "9876543210"
-    }
-  }'
-```
+- Implement Spring Boot controllers and service layer from the planned API surface
+- Add DTO validation and structured error responses
+- Add webhook idempotency handling against `webhook_events`
+- Add integration tests for init, verify, status, and webhook flows
+- Add Docker Compose for PostgreSQL + backend + frontend
 
-**Response:**
+## Why This Repo Exists
 
-```json
-{
-  "orderId": "c19f3ab4-64e4-4d9f-95da-24bcc0381f4f",
-  "gateway": "RAZORPAY",
-  "gatewayOrderId": "order_9A33XWu170gUtm",
-  "amount": 50000,
-  "currency": "INR",
-  "gatewayKeyId": "rzp_test_xxxxx"
-}
-```
+Payment integrations become messy fast: gateway IDs, local order IDs, webhooks, retries, signatures, and database state all have to agree. This repo is the foundation for a small, understandable payment service that can grow into a real internal module.
 
-### Verify Payment
+## License
 
-```bash
-curl -X POST http://localhost:8081/api/v1/payments/verify \
-  -H "Content-Type: application/json" \
-  -d '{
-    "orderId": "c19f3ab4-64e4-4d9f-95da-24bcc0381f4f",
-    "razorpayOrderId": "order_9A33XWu170gUtm",
-    "razorpayPaymentId": "pay_xxxxxxxxxxxxx",
-    "razorpaySignature": "signature_from_razorpay"
-  }'
-```
-
-### Get Payment Status
-
-```bash
-curl http://localhost:8081/api/v1/payments/status/c19f3ab4-64e4-4d9f-95da-24bcc0381f4f
-```
-
----
-
-## 🧪 Testing Payments
-
-### Test Card Details
-
-| Field | Value |
-|-------|-------|
-| Card Number | `4111 1111 1111 1111` |
-| Expiry | Any future date |
-| CVV | Any 3 digits |
-| OTP | Any value |
-
-### Test UPI
-
-Use `success@razorpay` as UPI ID for successful payments.
-
----
-
-## 📂 Project Structure
-
-```
-payment-microservice/
-├── src/main/java/in/ethiccode/paymentservice/
-│   ├── config/              # Configuration classes
-│   ├── controller/          # REST controllers
-│   ├── dto/                 # Data Transfer Objects
-│   │   ├── init/           # Payment initiation DTOs
-│   │   ├── verify/         # Payment verification DTOs
-│   │   └── status/         # Payment status DTOs
-│   ├── entity/              # JPA entities
-│   ├── enums/               # Enumerations
-│   ├── exception/           # Exception handling
-│   ├── repository/          # Data repositories
-│   └── service/             # Business logic
-├── src/main/resources/
-│   ├── application.yml      # App configuration
-│   └── schema.sql           # Database schema
-├── frontend/                # React application
-│   ├── src/
-│   │   ├── api/            # API client
-│   │   ├── components/     # React components
-│   │   ├── context/        # React contexts
-│   │   ├── data/           # Static data
-│   │   └── pages/          # Page components
-│   └── package.json
-├── build.gradle             # Gradle build config
-└── README.md
-```
-
----
-
-## 🔒 Security Features
-
-- ✅ HMAC-SHA256 signature verification for payments
-- ✅ Webhook signature verification
-- ✅ Environment variable support for secrets
-- ✅ Input validation on all endpoints
-- ✅ UUID-based public IDs (no internal ID exposure)
-
----
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**1. Razorpay keys not found**
-```
-IllegalStateException: Razorpay keys are missing/blank
-```
-→ Ensure environment variables are set correctly
-
-**2. Database connection failed**
-```
-Unable to acquire JDBC Connection
-```
-→ Check PostgreSQL is running and credentials are correct
-
-**3. Frontend can't connect to backend**
-```
-Failed to fetch
-```
-→ Ensure backend is running on port 8081
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Author
-
-**Developed by [EthicCode Technologies](https://github.com/TAGISWILD)**
-
-- **Atharva Chauhan** - *Backend Development*
-- GitHub: [@TAGISWILD](https://github.com/TAGISWILD)
-
----
-
-## 🙏 Acknowledgments
-
-- [Spring Boot](https://spring.io/projects/spring-boot) - Backend framework
-- [Razorpay](https://razorpay.com/) - Payment gateway
-- [React](https://react.dev/) - Frontend library
-- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
-
----
-
-<p align="center">
-  Made with ❤️ by EthicCode Technologies
-</p>
-
+MIT
